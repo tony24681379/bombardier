@@ -1,4 +1,4 @@
-package main
+package lib
 
 import (
 	"testing"
@@ -238,7 +238,7 @@ func TestCheckArgs(t *testing.T) {
 			t.Logf("Expected (%v).checkArgs to return %v, but got %v", e.in, e.out, r)
 			t.Fail()
 		}
-		if _, r := newBombardier(e.in); r != e.out {
+		if _, r := NewBombardier(e.in); r != e.out {
 			t.Logf("Expected newBombardier(%v) to return %v, but got %v", e.in, e.out, r)
 			t.Fail()
 		}

@@ -1,4 +1,4 @@
-package main
+package lib
 
 import (
 	"math"
@@ -65,7 +65,7 @@ func TestTimeBarrierCancel(t *testing.T) {
 	sleepTime := 100 * time.Millisecond
 	go func() {
 		time.Sleep(sleepTime)
-		b.cancel()
+		b.Cancel()
 	}()
 	select {
 	case <-b.done():
@@ -90,7 +90,7 @@ func TestCountedBarrierCancel(t *testing.T) {
 	}
 	go func() {
 		time.Sleep(sleepTime)
-		b.cancel()
+		b.Cancel()
 	}()
 	select {
 	case <-b.done():

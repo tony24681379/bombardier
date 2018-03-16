@@ -1,4 +1,4 @@
-package main
+package lib
 
 import (
 	"fmt"
@@ -28,7 +28,7 @@ func TestInvalidArgsParsing(t *testing.T) {
 	}
 	for _, e := range expectations {
 		p := newKingpinParser()
-		if _, err := p.parse(e.in); err == nil ||
+		if _, err := p.Parse(e.in); err == nil ||
 			err.Error() != e.out {
 			t.Error(err, e.out)
 		}
@@ -38,7 +38,7 @@ func TestInvalidArgsParsing(t *testing.T) {
 func TestUnspecifiedArgParsing(t *testing.T) {
 	p := newKingpinParser()
 	args := []string{programName, "--someunspecifiedflag"}
-	_, err := p.parse(args)
+	_, err := p.Parse(args)
 	if err == nil {
 		t.Fail()
 	}
@@ -60,7 +60,7 @@ func TestArgsParsing(t *testing.T) {
 				url:           "https://somehost.somedomain",
 				printIntro:    true,
 				printProgress: true,
-				printResult:   true,
+				PrintResult:   true,
 				format:        knownFormat("plain-text"),
 			},
 		},
@@ -104,7 +104,7 @@ func TestArgsParsing(t *testing.T) {
 				url:           "https://somehost.somedomain",
 				printIntro:    true,
 				printProgress: true,
-				printResult:   true,
+				PrintResult:   true,
 				format:        knownFormat("plain-text"),
 			},
 		},
@@ -130,7 +130,7 @@ func TestArgsParsing(t *testing.T) {
 				url:            "https://somehost.somedomain",
 				printIntro:     true,
 				printProgress:  true,
-				printResult:    true,
+				PrintResult:    true,
 				format:         knownFormat("plain-text"),
 			},
 		},
@@ -156,7 +156,7 @@ func TestArgsParsing(t *testing.T) {
 				url:           "https://somehost.somedomain",
 				printIntro:    true,
 				printProgress: true,
-				printResult:   true,
+				PrintResult:   true,
 				format:        knownFormat("plain-text"),
 			},
 		},
@@ -185,7 +185,7 @@ func TestArgsParsing(t *testing.T) {
 				url:           "https://somehost.somedomain",
 				printIntro:    true,
 				printProgress: true,
-				printResult:   true,
+				PrintResult:   true,
 				format:        knownFormat("plain-text"),
 			},
 		},
@@ -225,7 +225,7 @@ func TestArgsParsing(t *testing.T) {
 				url:           "https://somehost.somedomain",
 				printIntro:    true,
 				printProgress: true,
-				printResult:   true,
+				PrintResult:   true,
 				format:        knownFormat("plain-text"),
 			},
 		},
@@ -261,7 +261,7 @@ func TestArgsParsing(t *testing.T) {
 				url:           "https://somehost.somedomain",
 				printIntro:    true,
 				printProgress: true,
-				printResult:   true,
+				PrintResult:   true,
 				format:        knownFormat("plain-text"),
 			},
 		},
@@ -297,7 +297,7 @@ func TestArgsParsing(t *testing.T) {
 				rate:          &ten,
 				printIntro:    true,
 				printProgress: true,
-				printResult:   true,
+				PrintResult:   true,
 				format:        knownFormat("plain-text"),
 			},
 		},
@@ -322,7 +322,7 @@ func TestArgsParsing(t *testing.T) {
 				clientType:    fhttp,
 				printIntro:    true,
 				printProgress: true,
-				printResult:   true,
+				PrintResult:   true,
 				format:        knownFormat("plain-text"),
 			},
 		},
@@ -343,7 +343,7 @@ func TestArgsParsing(t *testing.T) {
 				clientType:    nhttp1,
 				printIntro:    true,
 				printProgress: true,
-				printResult:   true,
+				PrintResult:   true,
 				format:        knownFormat("plain-text"),
 			},
 		},
@@ -364,7 +364,7 @@ func TestArgsParsing(t *testing.T) {
 				clientType:    nhttp2,
 				printIntro:    true,
 				printProgress: true,
-				printResult:   true,
+				PrintResult:   true,
 				format:        knownFormat("plain-text"),
 			},
 		},
@@ -395,7 +395,7 @@ func TestArgsParsing(t *testing.T) {
 				url:           "https://somehost.somedomain",
 				printIntro:    true,
 				printProgress: true,
-				printResult:   true,
+				PrintResult:   true,
 				format:        knownFormat("plain-text"),
 			},
 		},
@@ -421,7 +421,7 @@ func TestArgsParsing(t *testing.T) {
 				url:           "https://somehost.somedomain",
 				printIntro:    true,
 				printProgress: true,
-				printResult:   true,
+				PrintResult:   true,
 				format:        knownFormat("plain-text"),
 			},
 		},
@@ -440,7 +440,7 @@ func TestArgsParsing(t *testing.T) {
 				url:           "https://somehost.somedomain",
 				printIntro:    true,
 				printProgress: true,
-				printResult:   true,
+				PrintResult:   true,
 				format:        knownFormat("plain-text"),
 			},
 		},
@@ -485,7 +485,7 @@ func TestArgsParsing(t *testing.T) {
 				url:           "https://somehost.somedomain",
 				printIntro:    true,
 				printProgress: true,
-				printResult:   true,
+				PrintResult:   true,
 				format:        knownFormat("plain-text"),
 			},
 		},
@@ -530,7 +530,7 @@ func TestArgsParsing(t *testing.T) {
 				url:           "https://somehost.somedomain",
 				printIntro:    true,
 				printProgress: false,
-				printResult:   true,
+				PrintResult:   true,
 				format:        knownFormat("plain-text"),
 			},
 		},
@@ -555,7 +555,7 @@ func TestArgsParsing(t *testing.T) {
 				url:           "https://somehost.somedomain",
 				printIntro:    false,
 				printProgress: false,
-				printResult:   false,
+				PrintResult:   false,
 				format:        knownFormat("plain-text"),
 			},
 		},
@@ -600,7 +600,7 @@ func TestArgsParsing(t *testing.T) {
 				url:           "https://somehost.somedomain",
 				printIntro:    true,
 				printProgress: true,
-				printResult:   true,
+				PrintResult:   true,
 				format:        knownFormat("plain-text"),
 			},
 		},
@@ -645,7 +645,7 @@ func TestArgsParsing(t *testing.T) {
 				url:           "https://somehost.somedomain",
 				printIntro:    true,
 				printProgress: true,
-				printResult:   true,
+				PrintResult:   true,
 				format:        knownFormat("json"),
 			},
 		},
@@ -675,7 +675,7 @@ func TestArgsParsing(t *testing.T) {
 				url:           "https://somehost.somedomain",
 				printIntro:    true,
 				printProgress: true,
-				printResult:   true,
+				PrintResult:   true,
 				format:        userDefinedTemplate("/path/to/tmpl.txt"),
 			},
 		},
@@ -683,7 +683,7 @@ func TestArgsParsing(t *testing.T) {
 	for _, e := range expectations {
 		for _, args := range e.in {
 			p := newKingpinParser()
-			cfg, err := p.parse(args)
+			cfg, err := p.Parse(args)
 			if err != nil {
 				t.Error(err)
 				continue
@@ -763,7 +763,7 @@ func TestParsePrintSpec(t *testing.T) {
 
 func TestArgsParsingWithEmptyPrintSpec(t *testing.T) {
 	p := newKingpinParser()
-	c, err := p.parse(
+	c, err := p.Parse(
 		[]string{programName, "--print=", "somehost.somedomain"})
 	if err == nil {
 		t.Fail()
@@ -784,7 +784,7 @@ func TestArgsParsingWithInvalidPrintSpec(t *testing.T) {
 	}
 	p := newKingpinParser()
 	for _, is := range invalidSpecs {
-		c, err := p.parse(is)
+		c, err := p.Parse(is)
 		if err == nil || c != emptyConf {
 			t.Errorf("invalid print spec %q parsed correctly", is)
 		}

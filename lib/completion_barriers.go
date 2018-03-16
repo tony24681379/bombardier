@@ -1,4 +1,4 @@
-package main
+package lib
 
 import (
 	"sync"
@@ -11,7 +11,7 @@ type completionBarrier interface {
 	tryGrabWork() bool
 	jobDone()
 	done() <-chan struct{}
-	cancel()
+	Cancel()
 }
 
 type countingCompletionBarrier struct {
@@ -50,7 +50,7 @@ func (c *countingCompletionBarrier) done() <-chan struct{} {
 	return c.doneChan
 }
 
-func (c *countingCompletionBarrier) cancel() {
+func (c *countingCompletionBarrier) Cancel() {
 	c.closeOnce.Do(func() {
 		close(c.doneChan)
 	})
@@ -107,7 +107,7 @@ func (c *timedCompletionBarrier) done() <-chan struct{} {
 	return c.doneChan
 }
 
-func (c *timedCompletionBarrier) cancel() {
+func (c *timedCompletionBarrier) Cancel() {
 	c.closeOnce.Do(func() {
 		close(c.doneChan)
 	})

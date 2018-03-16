@@ -1,4 +1,4 @@
-package main
+package lib
 
 import (
 	"fmt"
@@ -25,7 +25,7 @@ type config struct {
 	rate                     *uint64
 	clientType               clientTyp
 
-	printIntro, printProgress, printResult bool
+	printIntro, printProgress, PrintResult bool
 
 	format format
 }

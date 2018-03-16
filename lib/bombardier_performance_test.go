@@ -1,4 +1,4 @@
-package main
+package lib
 
 import (
 	"flag"
@@ -52,7 +52,7 @@ func BenchmarkBombardierRateLimitPerf(b *testing.B) {
 }
 
 func benchmarkFireRequest(c config, bm *testing.B) {
-	b, e := newBombardier(c)
+	b, e := NewBombardier(c)
 	if e != nil {
 		bm.Error(e)
 	}
@@ -60,7 +60,7 @@ func benchmarkFireRequest(c config, bm *testing.B) {
 	bm.SetParallelism(int(defaultNumberOfConns) / runtime.NumCPU())
 	bm.ResetTimer()
 	bm.RunParallel(func(pb *testing.PB) {
-		done := b.barrier.done()
+		done := b.Barrier.done()
 		for pb.Next() {
 			b.ratelimiter.pace(done)
 			b.performSingleRequest()

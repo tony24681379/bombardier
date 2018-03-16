@@ -1,4 +1,4 @@
-package main
+package lib
 
 import (
 	"bytes"
@@ -36,7 +36,7 @@ func testBombardierShouldFireSpecifiedNumberOfRequests(
 	defer s.Close()
 	numReqs := uint64(100)
 	noHeaders := new(headersList)
-	b, e := newBombardier(config{
+	b, e := NewBombardier(config{
 		numConns:   defaultNumberOfConns,
 		numReqs:    &numReqs,
 		url:        s.URL,
@@ -51,7 +51,7 @@ func testBombardierShouldFireSpecifiedNumberOfRequests(
 		t.Error(e)
 	}
 	b.disableOutput()
-	b.bombard()
+	b.Bombard()
 	if reqsReceived != numReqs {
 		t.Fail()
 	}
@@ -71,7 +71,7 @@ func testBombardierShouldFinish(clientType clientTyp, t *testing.T) {
 	defer s.Close()
 	noHeaders := new(headersList)
 	desiredTestDuration := 1 * time.Second
-	b, e := newBombardier(config{
+	b, e := NewBombardier(config{
 		numConns:   defaultNumberOfConns,
 		duration:   &desiredTestDuration,
 		url:        s.URL,
@@ -88,7 +88,7 @@ func testBombardierShouldFinish(clientType clientTyp, t *testing.T) {
 	b.disableOutput()
 	waitCh := make(chan struct{})
 	go func() {
-		b.bombard()
+		b.Bombard()
 		waitCh <- struct{}{}
 	}()
 	select {
@@ -134,7 +134,7 @@ func testBombardierShouldSendHeaders(clientType clientTyp, t *testing.T) {
 	)
 	defer s.Close()
 	numReqs := uint64(1)
-	b, e := newBombardier(config{
+	b, e := NewBombardier(config{
 		numConns:   defaultNumberOfConns,
 		numReqs:    &numReqs,
 		url:        s.URL,
@@ -149,7 +149,7 @@ func testBombardierShouldSendHeaders(clientType clientTyp, t *testing.T) {
 		t.Error(e)
 	}
 	b.disableOutput()
-	b.bombard()
+	b.Bombard()
 }
 
 func TestBombardierHTTPCodeRecording(t *testing.T) {
@@ -180,7 +180,7 @@ func testBombardierHTTPCodeRecording(clientType clientTyp, t *testing.T) {
 	defer s.Close()
 	eachCodeCount := uint64(10)
 	numReqs := uint64(len(cs)) * eachCodeCount
-	b, e := newBombardier(config{
+	b, e := NewBombardier(config{
 		numConns:   defaultNumberOfConns,
 		numReqs:    &numReqs,
 		url:        s.URL,
@@ -195,7 +195,7 @@ func testBombardierHTTPCodeRecording(clientType clientTyp, t *testing.T) {
 		t.Error(e)
 	}
 	b.disableOutput()
-	b.bombard()
+	b.Bombard()
 	expectation := []struct {
 		name     string
 		reqsGot  uint64
@@ -229,7 +229,7 @@ func testBombardierTimeoutRecoding(clientType clientTyp, t *testing.T) {
 	)
 	defer s.Close()
 	numReqs := uint64(10)
-	b, e := newBombardier(config{
+	b, e := NewBombardier(config{
 		numConns:   defaultNumberOfConns,
 		numReqs:    &numReqs,
 		duration:   nil,
@@ -245,7 +245,7 @@ func testBombardierTimeoutRecoding(clientType clientTyp, t *testing.T) {
 		t.Error(e)
 	}
 	b.disableOutput()
-	b.bombard()
+	b.Bombard()
 	if b.errors.sum() != numReqs {
 		t.Fail()
 	}
@@ -268,7 +268,7 @@ func testBombardierThroughputRecording(clientType clientTyp, t *testing.T) {
 	)
 	defer s.Close()
 	numReqs := uint64(10)
-	b, e := newBombardier(config{
+	b, e := NewBombardier(config{
 		numConns:   defaultNumberOfConns,
 		numReqs:    &numReqs,
 		url:        s.URL,
@@ -283,7 +283,7 @@ func testBombardierThroughputRecording(clientType clientTyp, t *testing.T) {
 		t.Error(e)
 	}
 	b.disableOutput()
-	b.bombard()
+	b.Bombard()
 	if b.bytesRead == 0 || b.bytesWritten == 0 {
 		t.Error(b.bytesRead, b.bytesWritten)
 	}
@@ -302,7 +302,7 @@ func TestBombardierStatsPrinting(t *testing.T) {
 	)
 	defer s.Close()
 	numReqs := uint64(10)
-	b, e := newBombardier(config{
+	b, e := NewBombardier(config{
 		numConns:       defaultNumberOfConns,
 		numReqs:        &numReqs,
 		url:            s.URL,
@@ -313,7 +313,7 @@ func TestBombardierStatsPrinting(t *testing.T) {
 		printLatencies: true,
 		printIntro:     true,
 		printProgress:  true,
-		printResult:    true,
+		PrintResult:    true,
 		format:         knownFormat("plain-text"),
 	})
 	if e != nil {
@@ -325,9 +325,9 @@ func TestBombardierStatsPrinting(t *testing.T) {
 
 	out := new(bytes.Buffer)
 	b.redirectOutputTo(out)
-	b.bombard()
+	b.Bombard()
 
-	b.printStats()
+	b.PrintStats()
 	l := out.Len()
 	// Here we only test if anything is written
 	if l == 0 {
@@ -337,7 +337,7 @@ func TestBombardierStatsPrinting(t *testing.T) {
 
 func TestBombardierErrorIfFailToReadClientCert(t *testing.T) {
 	numReqs := uint64(10)
-	_, e := newBombardier(config{
+	_, e := NewBombardier(config{
 		numConns:       defaultNumberOfConns,
 		numReqs:        &numReqs,
 		url:            "http://localhost",
@@ -407,7 +407,7 @@ func testBombardierClientCerts(clientType clientTyp, t *testing.T) {
 	}()
 
 	numReqs := uint64(1)
-	b, e := newBombardier(config{
+	b, e := NewBombardier(config{
 		numConns:       defaultNumberOfConns,
 		numReqs:        &numReqs,
 		url:            "https://localhost:8080/",
@@ -428,7 +428,7 @@ func testBombardierClientCerts(clientType clientTyp, t *testing.T) {
 	}
 	b.disableOutput()
 
-	b.bombard()
+	b.Bombard()
 	if b.req2xx != 1 {
 		t.Error("no requests succeeded")
 	}
@@ -460,7 +460,7 @@ func testBombardierRateLimiting(clientType clientTyp, t *testing.T) {
 	defer s.Close()
 	rate := uint64(5000)
 	testDuration := 1 * time.Second
-	b, e := newBombardier(config{
+	b, e := NewBombardier(config{
 		numConns:   defaultNumberOfConns,
 		duration:   &testDuration,
 		url:        s.URL,
@@ -477,7 +477,7 @@ func testBombardierRateLimiting(clientType clientTyp, t *testing.T) {
 		return
 	}
 	b.disableOutput()
-	b.bombard()
+	b.Bombard()
 	if float64(b.req2xx) < float64(rate)*0.75 ||
 		float64(b.req2xx) > float64(rate)*1.25 {
 		t.Error(rate, b.req2xx)
@@ -518,7 +518,7 @@ func testBombardierSendsBody(clientType clientTyp, t *testing.T) {
 	)
 	defer s.Close()
 	one := uint64(1)
-	b, e := newBombardier(config{
+	b, e := NewBombardier(config{
 		numConns:   defaultNumberOfConns,
 		numReqs:    &one,
 		url:        s.URL,
@@ -534,7 +534,7 @@ func testBombardierSendsBody(clientType clientTyp, t *testing.T) {
 		return
 	}
 	b.disableOutput()
-	b.bombard()
+	b.Bombard()
 }
 
 func TestBombardierSendsBodyFromFile(t *testing.T) {
@@ -567,7 +567,7 @@ func testBombardierSendsBodyFromFile(clientType clientTyp, t *testing.T) {
 	)
 	defer s.Close()
 	one := uint64(1)
-	b, e := newBombardier(config{
+	b, e := NewBombardier(config{
 		numConns:     defaultNumberOfConns,
 		numReqs:      &one,
 		url:          s.URL,
@@ -583,12 +583,12 @@ func testBombardierSendsBodyFromFile(clientType clientTyp, t *testing.T) {
 		return
 	}
 	b.disableOutput()
-	b.bombard()
+	b.Bombard()
 }
 
 func TestBombardierFileDoesntExist(t *testing.T) {
 	bodyPath := "/does/not/exist.forreal"
-	_, e := newBombardier(config{
+	_, e := NewBombardier(config{
 		numConns:     defaultNumberOfConns,
 		url:          "http://example.com",
 		headers:      new(headersList),
@@ -631,7 +631,7 @@ func testBombardierStreamsBody(clientType clientTyp, t *testing.T) {
 	)
 	defer s.Close()
 	one := uint64(1)
-	b, e := newBombardier(config{
+	b, e := NewBombardier(config{
 		numConns:   defaultNumberOfConns,
 		numReqs:    &one,
 		url:        s.URL,
@@ -648,7 +648,7 @@ func testBombardierStreamsBody(clientType clientTyp, t *testing.T) {
 		return
 	}
 	b.disableOutput()
-	b.bombard()
+	b.Bombard()
 }
 
 func TestBombardierStreamsBodyFromFile(t *testing.T) {
@@ -684,7 +684,7 @@ func testBombardierStreamsBodyFromFile(clientType clientTyp, t *testing.T) {
 	)
 	defer s.Close()
 	one := uint64(1)
-	b, e := newBombardier(config{
+	b, e := NewBombardier(config{
 		numConns:     defaultNumberOfConns,
 		numReqs:      &one,
 		url:          s.URL,
@@ -701,5 +701,5 @@ func testBombardierStreamsBodyFromFile(clientType clientTyp, t *testing.T) {
 		return
 	}
 	b.disableOutput()
-	b.bombard()
+	b.Bombard()
 }

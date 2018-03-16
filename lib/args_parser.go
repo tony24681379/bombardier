@@ -1,4 +1,4 @@
-package main
+package lib
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 )
 
 type argsParser interface {
-	parse([]string) (config, error)
+	Parse([]string) (config, error)
 }
 
 type kingpinParser struct {
@@ -178,7 +178,7 @@ func newKingpinParser() argsParser {
 	return argsParser(kparser)
 }
 
-func (k *kingpinParser) parse(args []string) (config, error) {
+func (k *kingpinParser) Parse(args []string) (config, error) {
 	k.app.Name = args[0]
 	_, err := k.app.Parse(args[1:])
 	if err != nil {
@@ -219,7 +219,7 @@ func (k *kingpinParser) parse(args []string) (config, error) {
 		clientType:     k.clientType,
 		printIntro:     pi,
 		printProgress:  pp,
-		printResult:    pr,
+		PrintResult:    pr,
 		format:         format,
 	}, nil
 }

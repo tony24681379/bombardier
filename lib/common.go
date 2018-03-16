@@ -1,4 +1,4 @@
-package main
+package lib
 
 import (
 	"errors"
@@ -12,14 +12,14 @@ const (
 	rateLimitInterval = 10 * time.Millisecond
 	oneSecond         = 1 * time.Second
 
-	exitFailure = 1
+	ExitFailure = 1
 )
 
 var (
 	version = "unspecified"
 
 	emptyConf = config{}
-	parser    = newKingpinParser()
+	Parser    = newKingpinParser()
 
 	defaultTestDuration  = 10 * time.Second
 	defaultNumberOfConns = uint64(125)
