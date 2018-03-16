@@ -21,8 +21,8 @@ func readClientCert(certPath, keyPath string) ([]tls.Certificate, error) {
 
 // generateTLSConfig - helper function to generate a TLS configuration based on
 // config
-func generateTLSConfig(c config) (*tls.Config, error) {
-	certs, err := readClientCert(c.certPath, c.keyPath)
+func generateTLSConfig(c Config) (*tls.Config, error) {
+	certs, err := readClientCert(c.CertPath, c.KeyPath)
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func generateTLSConfig(c config) (*tls.Config, error) {
 	// for the purpose of testing
 	/* #nosec */
 	tlsConfig := &tls.Config{
-		InsecureSkipVerify: c.insecure,
+		InsecureSkipVerify: c.Insecure,
 		Certificates:       certs,
 	}
 	return tlsConfig, nil

@@ -9,17 +9,17 @@ type header struct {
 	key, value string
 }
 
-type headersList []header
+type HeadersList []header
 
-func (h *headersList) String() string {
+func (h *HeadersList) String() string {
 	return fmt.Sprint(*h)
 }
 
-func (h *headersList) IsCumulative() bool {
+func (h *HeadersList) IsCumulative() bool {
 	return true
 }
 
-func (h *headersList) Set(value string) error {
+func (h *HeadersList) Set(value string) error {
 	res := strings.SplitN(value, ":", 2)
 	if len(res) != 2 {
 		return errInvalidHeaderFormat

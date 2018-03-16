@@ -29,7 +29,7 @@ type Bombardier struct {
 	req5xx uint64
 	others uint64
 
-	Conf        config
+	Conf        Config
 	Barrier     completionBarrier
 	ratelimiter limiter
 	workers     sync.WaitGroup
@@ -57,7 +57,7 @@ type Bombardier struct {
 	template *template.Template
 }
 
-func NewBombardier(c config) (*Bombardier, error) {
+func NewBombardier(c Config) (*Bombardier, error) {
 	if err := c.checkArgs(); err != nil {
 		return nil, err
 	}
@@ -67,22 +67,22 @@ func NewBombardier(c config) (*Bombardier, error) {
 	b.requests = fhist.Default()
 
 	if b.Conf.testType() == counted {
-		b.bar = pb.New64(int64(*b.Conf.numReqs))
+		b.bar = pb.New64(int64(*b.Conf.NumReqs))
 	} else if b.Conf.testType() == timed {
-		b.bar = pb.New64(b.Conf.duration.Nanoseconds() / 1e9)
+		b.bar = pb.New64(b.Conf.Duration.Nanoseconds() / 1e9)
 		b.bar.ShowCounters = false
 		b.bar.ShowPercent = false
 	}
 	b.bar.ManualUpdate = true
 
 	if b.Conf.testType() == counted {
-		b.Barrier = newCountingCompletionBarrier(*b.Conf.numReqs)
+		b.Barrier = newCountingCompletionBarrier(*b.Conf.NumReqs)
 	} else {
-		b.Barrier = newTimedCompletionBarrier(*b.Conf.duration)
+		b.Barrier = newTimedCompletionBarrier(*b.Conf.Duration)
 	}
 
-	if b.Conf.rate != nil {
-		b.ratelimiter = newBucketLimiter(*b.Conf.rate)
+	if b.Conf.Rate != nil {
+		b.ratelimiter = newBucketLimiter(*b.Conf.Rate)
 	} else {
 		b.ratelimiter = &nooplimiter{}
 	}
@@ -98,23 +98,23 @@ func NewBombardier(c config) (*Bombardier, error) {
 		pbody *string
 		bsp   bodyStreamProducer
 	)
-	if c.stream {
-		if c.bodyFilePath != "" {
+	if c.Stream {
+		if c.BodyFilePath != "" {
 			bsp = func() (io.ReadCloser, error) {
-				return os.Open(c.bodyFilePath)
+				return os.Open(c.BodyFilePath)
 			}
 		} else {
 			bsp = func() (io.ReadCloser, error) {
 				return ioutil.NopCloser(
-					proxyReader{strings.NewReader(c.body)},
+					proxyReader{strings.NewReader(c.Body)},
 				), nil
 			}
 		}
 	} else {
-		pbody = &c.body
-		if c.bodyFilePath != "" {
+		pbody = &c.Body
+		if c.BodyFilePath != "" {
 			var bodyBytes []byte
-			bodyBytes, err = ioutil.ReadFile(c.bodyFilePath)
+			bodyBytes, err = ioutil.ReadFile(c.BodyFilePath)
 			if err != nil {
 				return nil, err
 			}
@@ -125,21 +125,21 @@ func NewBombardier(c config) (*Bombardier, error) {
 
 	cc := &clientOpts{
 		HTTP2:     false,
-		maxConns:  c.numConns,
-		timeout:   c.timeout,
+		maxConns:  c.NumConns,
+		timeout:   c.Timeout,
 		tlsConfig: tlsConfig,
 
-		headers:      c.headers,
-		url:          c.url,
-		method:       c.method,
+		headers:      c.Headers,
+		url:          c.Url,
+		method:       c.Method,
 		body:         pbody,
 		bodProd:      bsp,
 		bytesRead:    &b.bytesRead,
 		bytesWritten: &b.bytesWritten,
 	}
-	b.client = makeHTTPClient(c.clientType, cc)
+	b.client = makeHTTPClient(c.ClientType, cc)
 
-	if !b.Conf.printProgress {
+	if !b.Conf.PrintProgress {
 		b.bar.Output = ioutil.Discard
 		b.bar.NotPrint = true
 	}
@@ -149,7 +149,7 @@ func NewBombardier(c config) (*Bombardier, error) {
 		return nil, err
 	}
 
-	b.workers.Add(int(c.numConns))
+	b.workers.Add(int(c.NumConns))
 	b.errors = newErrorMap()
 	b.doneChan = make(chan struct{}, 2)
 	return b, nil
@@ -176,7 +176,7 @@ func (b *Bombardier) prepareTemplate() (*template.Template, error) {
 		templateBytes []byte
 		err           error
 	)
-	switch f := b.Conf.format.(type) {
+	switch f := b.Conf.Format.(type) {
 	case knownFormat:
 		templateBytes = f.template()
 	case userDefinedTemplate:
@@ -190,7 +190,7 @@ func (b *Bombardier) prepareTemplate() (*template.Template, error) {
 	outputTemplate, err := template.New("output-template").
 		Funcs(template.FuncMap{
 			"WithLatencies": func() bool {
-				return b.Conf.printLatencies
+				return b.Conf.PrintLatencies
 			},
 			"FormatBinary": formatBinary,
 			"FormatTimeUs": formatTimeUs,
@@ -271,7 +271,7 @@ func (b *Bombardier) barUpdater() {
 			b.bar.Set64(b.bar.Total)
 			b.bar.Update()
 			b.bar.Finish()
-			if b.Conf.printProgress {
+			if b.Conf.PrintProgress {
 				fmt.Fprintln(b.out, "Done!")
 			}
 			b.doneChan <- struct{}{}
@@ -287,8 +287,8 @@ func (b *Bombardier) barUpdater() {
 
 func (b *Bombardier) rateMeter() {
 	requestsInterval := 10 * time.Millisecond
-	if b.Conf.rate != nil {
-		requestsInterval, _ = estimate(*b.Conf.rate, rateLimitInterval)
+	if b.Conf.Rate != nil {
+		requestsInterval, _ = estimate(*b.Conf.Rate, rateLimitInterval)
 	}
 	requestsInterval += 10 * time.Millisecond
 	ticker := time.NewTicker(requestsInterval)
@@ -322,13 +322,13 @@ func (b *Bombardier) recordRps() {
 }
 
 func (b *Bombardier) Bombard() {
-	if b.Conf.printIntro {
+	if b.Conf.PrintIntro {
 		b.printIntro()
 	}
 	b.bar.Start()
 	bombardmentBegin := time.Now()
 	b.start = time.Now()
-	for i := uint64(0); i < b.Conf.numConns; i++ {
+	for i := uint64(0); i < b.Conf.NumConns; i++ {
 		go func() {
 			defer b.workers.Done()
 			b.worker()
@@ -346,32 +346,32 @@ func (b *Bombardier) printIntro() {
 	if b.Conf.testType() == counted {
 		fmt.Fprintf(b.out,
 			"Bombarding %v with %v request(s) using %v connection(s)\n",
-			b.Conf.url, *b.Conf.numReqs, b.Conf.numConns)
+			b.Conf.Url, *b.Conf.NumReqs, b.Conf.NumConns)
 	} else if b.Conf.testType() == timed {
 		fmt.Fprintf(b.out, "Bombarding %v for %v using %v connection(s)\n",
-			b.Conf.url, *b.Conf.duration, b.Conf.numConns)
+			b.Conf.Url, *b.Conf.Duration, b.Conf.NumConns)
 	}
 }
 
 func (b *Bombardier) gatherInfo() internal.TestInfo {
 	info := internal.TestInfo{
 		Spec: internal.Spec{
-			NumberOfConnections: b.Conf.numConns,
+			NumberOfConnections: b.Conf.NumConns,
 
-			Method: b.Conf.method,
-			URL:    b.Conf.url,
+			Method: b.Conf.Method,
+			URL:    b.Conf.Url,
 
-			Body:         b.Conf.body,
-			BodyFilePath: b.Conf.bodyFilePath,
+			Body:         b.Conf.Body,
+			BodyFilePath: b.Conf.BodyFilePath,
 
-			CertPath: b.Conf.certPath,
-			KeyPath:  b.Conf.keyPath,
+			CertPath: b.Conf.CertPath,
+			KeyPath:  b.Conf.KeyPath,
 
-			Stream:     b.Conf.stream,
-			Timeout:    b.Conf.timeout,
-			ClientType: internal.ClientType(b.Conf.clientType),
+			Stream:     b.Conf.Stream,
+			Timeout:    b.Conf.Timeout,
+			ClientType: internal.ClientType(b.Conf.ClientType),
 
-			Rate: b.Conf.rate,
+			Rate: b.Conf.Rate,
 		},
 		Result: internal.Results{
 			BytesRead:    b.bytesRead,
@@ -393,13 +393,13 @@ func (b *Bombardier) gatherInfo() internal.TestInfo {
 	testType := b.Conf.testType()
 	info.Spec.TestType = internal.TestType(testType)
 	if testType == timed {
-		info.Spec.TestDuration = *b.Conf.duration
+		info.Spec.TestDuration = *b.Conf.Duration
 	} else if testType == counted {
-		info.Spec.NumberOfRequests = *b.Conf.numReqs
+		info.Spec.NumberOfRequests = *b.Conf.NumReqs
 	}
 
-	if b.Conf.headers != nil {
-		for _, h := range *b.Conf.headers {
+	if b.Conf.Headers != nil {
+		for _, h := range *b.Conf.Headers {
 			info.Spec.Headers = append(info.Spec.Headers,
 				internal.Header{
 					Key:   h.key,

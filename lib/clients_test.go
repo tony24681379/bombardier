@@ -11,21 +11,21 @@ import (
 )
 
 func TestShouldReturnNilIfNoHeadersWhereSet(t *testing.T) {
-	h := new(headersList)
+	h := new(HeadersList)
 	if headersToFastHTTPHeaders(h) != nil {
 		t.Fail()
 	}
 }
 
 func TestShouldReturnEmptyHeadersIfNoHeaadersWhereSet(t *testing.T) {
-	h := new(headersList)
+	h := new(HeadersList)
 	if len(headersToHTTPHeaders(h)) != 0 {
 		t.Fail()
 	}
 }
 
 func TestShouldProperlyConvertToHttpHeaders(t *testing.T) {
-	h := new(headersList)
+	h := new(HeadersList)
 	for _, hs := range []string{
 		"Content-Type: application/json", "Custom-Header: xxx42xxx",
 	} {
@@ -91,7 +91,7 @@ func TestHTTP2Client(t *testing.T) {
 	c := newHTTPClient(&clientOpts{
 		HTTP2: true,
 
-		headers: new(headersList),
+		headers: new(HeadersList),
 		url:     "https://" + url,
 		method:  "GET",
 		tlsConfig: &tls.Config{
@@ -148,7 +148,7 @@ func TestHTTP1Clients(t *testing.T) {
 	cc := &clientOpts{
 		HTTP2: false,
 
-		headers: new(headersList),
+		headers: new(HeadersList),
 		url:     s.URL,
 		method:  "GET",
 

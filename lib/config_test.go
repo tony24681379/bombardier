@@ -53,182 +53,182 @@ func TestCheckArgs(t *testing.T) {
 	invalidNumberOfReqs := uint64(0)
 	smallTestDuration := 99 * time.Millisecond
 	negativeTimeoutDuration := -1 * time.Second
-	noHeaders := new(headersList)
+	noHeaders := new(HeadersList)
 	zeroRate := uint64(0)
 	expectations := []struct {
-		in  config
+		in  Config
 		out error
 	}{
 		{
-			config{
-				numConns: defaultNumberOfConns,
-				numReqs:  &defaultNumberOfReqs,
-				duration: &defaultTestDuration,
-				url:      "ftp://localhost:8080",
-				headers:  noHeaders,
-				timeout:  defaultTimeout,
-				method:   "GET",
-				body:     "",
-				format:   knownFormat("plain-text"),
+			Config{
+				NumConns: defaultNumberOfConns,
+				NumReqs:  &defaultNumberOfReqs,
+				Duration: &defaultTestDuration,
+				Url:      "ftp://localhost:8080",
+				Headers:  noHeaders,
+				Timeout:  defaultTimeout,
+				Method:   "GET",
+				Body:     "",
+				Format:   knownFormat("plain-text"),
 			},
 			errInvalidURL,
 		},
 		{
-			config{
-				numConns: 0,
-				numReqs:  &defaultNumberOfReqs,
-				duration: &defaultTestDuration,
-				url:      "http://localhost:8080",
-				headers:  noHeaders,
-				timeout:  defaultTimeout,
-				method:   "GET",
-				body:     "",
-				format:   knownFormat("plain-text"),
+			Config{
+				NumConns: 0,
+				NumReqs:  &defaultNumberOfReqs,
+				Duration: &defaultTestDuration,
+				Url:      "http://localhost:8080",
+				Headers:  noHeaders,
+				Timeout:  defaultTimeout,
+				Method:   "GET",
+				Body:     "",
+				Format:   knownFormat("plain-text"),
 			},
 			errInvalidNumberOfConns,
 		},
 		{
-			config{
-				numConns: defaultNumberOfConns,
-				numReqs:  &invalidNumberOfReqs,
-				duration: &defaultTestDuration,
-				url:      "http://localhost:8080",
-				headers:  noHeaders,
-				timeout:  defaultTimeout,
-				method:   "GET",
-				body:     "",
-				format:   knownFormat("plain-text"),
+			Config{
+				NumConns: defaultNumberOfConns,
+				NumReqs:  &invalidNumberOfReqs,
+				Duration: &defaultTestDuration,
+				Url:      "http://localhost:8080",
+				Headers:  noHeaders,
+				Timeout:  defaultTimeout,
+				Method:   "GET",
+				Body:     "",
+				Format:   knownFormat("plain-text"),
 			},
 			errInvalidNumberOfRequests,
 		},
 		{
-			config{
-				numConns: defaultNumberOfConns,
-				numReqs:  nil,
-				duration: &smallTestDuration,
-				url:      "http://localhost:8080",
-				headers:  noHeaders,
-				timeout:  defaultTimeout,
-				method:   "GET",
-				body:     "",
-				format:   knownFormat("plain-text"),
+			Config{
+				NumConns: defaultNumberOfConns,
+				NumReqs:  nil,
+				Duration: &smallTestDuration,
+				Url:      "http://localhost:8080",
+				Headers:  noHeaders,
+				Timeout:  defaultTimeout,
+				Method:   "GET",
+				Body:     "",
+				Format:   knownFormat("plain-text"),
 			},
 			errInvalidTestDuration,
 		},
 		{
-			config{
-				numConns: defaultNumberOfConns,
-				numReqs:  &defaultNumberOfReqs,
-				duration: &defaultTestDuration,
-				url:      "http://localhost:8080",
-				headers:  noHeaders,
-				timeout:  negativeTimeoutDuration,
-				method:   "GET",
-				body:     "",
-				format:   knownFormat("plain-text"),
+			Config{
+				NumConns: defaultNumberOfConns,
+				NumReqs:  &defaultNumberOfReqs,
+				Duration: &defaultTestDuration,
+				Url:      "http://localhost:8080",
+				Headers:  noHeaders,
+				Timeout:  negativeTimeoutDuration,
+				Method:   "GET",
+				Body:     "",
+				Format:   knownFormat("plain-text"),
 			},
 			errNegativeTimeout,
 		},
 		{
-			config{
-				numConns: defaultNumberOfConns,
-				numReqs:  &defaultNumberOfReqs,
-				duration: &defaultTestDuration,
-				url:      "http://localhost:8080",
-				headers:  noHeaders,
-				timeout:  defaultTimeout,
-				method:   "GET",
-				body:     "BODY",
-				format:   knownFormat("plain-text"),
+			Config{
+				NumConns: defaultNumberOfConns,
+				NumReqs:  &defaultNumberOfReqs,
+				Duration: &defaultTestDuration,
+				Url:      "http://localhost:8080",
+				Headers:  noHeaders,
+				Timeout:  defaultTimeout,
+				Method:   "GET",
+				Body:     "BODY",
+				Format:   knownFormat("plain-text"),
 			},
 			errBodyNotAllowed,
 		},
 		{
-			config{
-				numConns:     defaultNumberOfConns,
-				numReqs:      &defaultNumberOfReqs,
-				duration:     &defaultTestDuration,
-				url:          "http://localhost:8080",
-				headers:      noHeaders,
-				timeout:      defaultTimeout,
-				method:       "GET",
-				bodyFilePath: "testbody.txt",
-				format:       knownFormat("plain-text"),
+			Config{
+				NumConns:     defaultNumberOfConns,
+				NumReqs:      &defaultNumberOfReqs,
+				Duration:     &defaultTestDuration,
+				Url:          "http://localhost:8080",
+				Headers:      noHeaders,
+				Timeout:      defaultTimeout,
+				Method:       "GET",
+				BodyFilePath: "testbody.txt",
+				Format:       knownFormat("plain-text"),
 			},
 			errBodyNotAllowed,
 		},
 		{
-			config{
-				numConns: defaultNumberOfConns,
-				numReqs:  &defaultNumberOfReqs,
-				duration: &defaultTestDuration,
-				url:      "http://localhost:8080",
-				headers:  noHeaders,
-				timeout:  defaultTimeout,
-				method:   "GET",
-				body:     "",
-				format:   knownFormat("plain-text"),
+			Config{
+				NumConns: defaultNumberOfConns,
+				NumReqs:  &defaultNumberOfReqs,
+				Duration: &defaultTestDuration,
+				Url:      "http://localhost:8080",
+				Headers:  noHeaders,
+				Timeout:  defaultTimeout,
+				Method:   "GET",
+				Body:     "",
+				Format:   knownFormat("plain-text"),
 			},
 			nil,
 		},
 		{
-			config{
-				numConns: defaultNumberOfConns,
-				numReqs:  &defaultNumberOfReqs,
-				duration: &defaultTestDuration,
-				url:      "http://localhost:8080",
-				headers:  noHeaders,
-				timeout:  defaultTimeout,
-				method:   "GET",
-				body:     "",
-				certPath: "test_cert.pem",
-				keyPath:  "",
-				format:   knownFormat("plain-text"),
+			Config{
+				NumConns: defaultNumberOfConns,
+				NumReqs:  &defaultNumberOfReqs,
+				Duration: &defaultTestDuration,
+				Url:      "http://localhost:8080",
+				Headers:  noHeaders,
+				Timeout:  defaultTimeout,
+				Method:   "GET",
+				Body:     "",
+				CertPath: "test_cert.pem",
+				KeyPath:  "",
+				Format:   knownFormat("plain-text"),
 			},
 			errNoPathToKey,
 		},
 		{
-			config{
-				numConns: defaultNumberOfConns,
-				numReqs:  &defaultNumberOfReqs,
-				duration: &defaultTestDuration,
-				url:      "http://localhost:8080",
-				headers:  noHeaders,
-				timeout:  defaultTimeout,
-				method:   "GET",
-				body:     "",
-				certPath: "",
-				keyPath:  "test_key.pem",
-				format:   knownFormat("plain-text"),
+			Config{
+				NumConns: defaultNumberOfConns,
+				NumReqs:  &defaultNumberOfReqs,
+				Duration: &defaultTestDuration,
+				Url:      "http://localhost:8080",
+				Headers:  noHeaders,
+				Timeout:  defaultTimeout,
+				Method:   "GET",
+				Body:     "",
+				CertPath: "",
+				KeyPath:  "test_key.pem",
+				Format:   knownFormat("plain-text"),
 			},
 			errNoPathToCert,
 		},
 		{
-			config{
-				numConns: defaultNumberOfConns,
-				numReqs:  &defaultNumberOfReqs,
-				duration: &defaultTestDuration,
-				url:      "http://localhost:8080",
-				headers:  noHeaders,
-				timeout:  defaultTimeout,
-				method:   "GET",
-				rate:     &zeroRate,
-				format:   knownFormat("plain-text"),
+			Config{
+				NumConns: defaultNumberOfConns,
+				NumReqs:  &defaultNumberOfReqs,
+				Duration: &defaultTestDuration,
+				Url:      "http://localhost:8080",
+				Headers:  noHeaders,
+				Timeout:  defaultTimeout,
+				Method:   "GET",
+				Rate:     &zeroRate,
+				Format:   knownFormat("plain-text"),
 			},
 			errZeroRate,
 		},
 		{
-			config{
-				numConns:     defaultNumberOfConns,
-				numReqs:      &defaultNumberOfReqs,
-				duration:     &defaultTestDuration,
-				url:          "http://localhost:8080",
-				headers:      noHeaders,
-				timeout:      defaultTimeout,
-				method:       "POST",
-				body:         "abracadabra",
-				bodyFilePath: "testbody.txt",
-				format:       knownFormat("plain-text"),
+			Config{
+				NumConns:     defaultNumberOfConns,
+				NumReqs:      &defaultNumberOfReqs,
+				Duration:     &defaultTestDuration,
+				Url:          "http://localhost:8080",
+				Headers:      noHeaders,
+				Timeout:      defaultTimeout,
+				Method:       "POST",
+				Body:         "abracadabra",
+				BodyFilePath: "testbody.txt",
+				Format:       knownFormat("plain-text"),
 			},
 			errBodyProvidedTwice,
 		},
@@ -246,15 +246,15 @@ func TestCheckArgs(t *testing.T) {
 }
 
 func TestCheckArgsGarbageUrl(t *testing.T) {
-	c := config{
-		numConns: defaultNumberOfConns,
-		numReqs:  &defaultNumberOfReqs,
-		duration: &defaultTestDuration,
-		url:      "8080",
-		headers:  nil,
-		timeout:  defaultTimeout,
-		method:   "GET",
-		body:     "",
+	c := Config{
+		NumConns: defaultNumberOfConns,
+		NumReqs:  &defaultNumberOfReqs,
+		Duration: &defaultTestDuration,
+		Url:      "8080",
+		Headers:  nil,
+		Timeout:  defaultTimeout,
+		Method:   "GET",
+		Body:     "",
 	}
 	if c.checkArgs() == nil {
 		t.Fail()
@@ -262,15 +262,15 @@ func TestCheckArgsGarbageUrl(t *testing.T) {
 }
 
 func TestCheckArgsInvalidRequestMethod(t *testing.T) {
-	c := config{
-		numConns: defaultNumberOfConns,
-		numReqs:  &defaultNumberOfReqs,
-		duration: &defaultTestDuration,
-		url:      "http://localhost:8080",
-		headers:  nil,
-		timeout:  defaultTimeout,
-		method:   "ABRACADABRA",
-		body:     "",
+	c := Config{
+		NumConns: defaultNumberOfConns,
+		NumReqs:  &defaultNumberOfReqs,
+		Duration: &defaultTestDuration,
+		Url:      "http://localhost:8080",
+		Headers:  nil,
+		Timeout:  defaultTimeout,
+		Method:   "ABRACADABRA",
+		Body:     "",
 	}
 	e := c.checkArgs()
 	if e == nil {
@@ -282,45 +282,45 @@ func TestCheckArgsInvalidRequestMethod(t *testing.T) {
 }
 
 func TestCheckArgsTestType(t *testing.T) {
-	countedConfig := config{
-		numConns: defaultNumberOfConns,
-		numReqs:  &defaultNumberOfReqs,
-		duration: nil,
-		url:      "http://localhost:8080",
-		headers:  nil,
-		timeout:  defaultTimeout,
-		method:   "GET",
-		body:     "",
+	countedConfig := Config{
+		NumConns: defaultNumberOfConns,
+		NumReqs:  &defaultNumberOfReqs,
+		Duration: nil,
+		Url:      "http://localhost:8080",
+		Headers:  nil,
+		Timeout:  defaultTimeout,
+		Method:   "GET",
+		Body:     "",
 	}
-	timedConfig := config{
-		numConns: defaultNumberOfConns,
-		numReqs:  nil,
-		duration: &defaultTestDuration,
-		url:      "http://localhost:8080",
-		headers:  nil,
-		timeout:  defaultTimeout,
-		method:   "GET",
-		body:     "",
+	timedConfig := Config{
+		NumConns: defaultNumberOfConns,
+		NumReqs:  nil,
+		Duration: &defaultTestDuration,
+		Url:      "http://localhost:8080",
+		Headers:  nil,
+		Timeout:  defaultTimeout,
+		Method:   "GET",
+		Body:     "",
 	}
-	both := config{
-		numConns: defaultNumberOfConns,
-		numReqs:  &defaultNumberOfReqs,
-		duration: &defaultTestDuration,
-		url:      "http://localhost:8080",
-		headers:  nil,
-		timeout:  defaultTimeout,
-		method:   "GET",
-		body:     "",
+	both := Config{
+		NumConns: defaultNumberOfConns,
+		NumReqs:  &defaultNumberOfReqs,
+		Duration: &defaultTestDuration,
+		Url:      "http://localhost:8080",
+		Headers:  nil,
+		Timeout:  defaultTimeout,
+		Method:   "GET",
+		Body:     "",
 	}
-	defaultConfig := config{
-		numConns: defaultNumberOfConns,
-		numReqs:  nil,
-		duration: nil,
-		url:      "http://localhost:8080",
-		headers:  nil,
-		timeout:  defaultTimeout,
-		method:   "GET",
-		body:     "",
+	defaultConfig := Config{
+		NumConns: defaultNumberOfConns,
+		NumReqs:  nil,
+		Duration: nil,
+		Url:      "http://localhost:8080",
+		Headers:  nil,
+		Timeout:  defaultTimeout,
+		Method:   "GET",
+		Body:     "",
 	}
 	if err := countedConfig.checkArgs(); err != nil ||
 		countedConfig.testType() != counted {
@@ -336,21 +336,21 @@ func TestCheckArgsTestType(t *testing.T) {
 	}
 	if err := defaultConfig.checkArgs(); err != nil ||
 		defaultConfig.testType() != timed ||
-		defaultConfig.duration != &defaultTestDuration {
+		defaultConfig.Duration != &defaultTestDuration {
 		t.Fail()
 	}
 }
 
 func TestTimeoutMillis(t *testing.T) {
-	defaultConfig := config{
-		numConns: defaultNumberOfConns,
-		numReqs:  nil,
-		duration: nil,
-		url:      "http://localhost:8080",
-		headers:  nil,
-		timeout:  2 * time.Second,
-		method:   "GET",
-		body:     "",
+	defaultConfig := Config{
+		NumConns: defaultNumberOfConns,
+		NumReqs:  nil,
+		Duration: nil,
+		Url:      "http://localhost:8080",
+		Headers:  nil,
+		Timeout:  2 * time.Second,
+		Method:   "GET",
+		Body:     "",
 	}
 	if defaultConfig.timeoutMillis() != 2000000 {
 		t.Fail()
@@ -367,22 +367,22 @@ func TestInvalidHTTPMethodError(t *testing.T) {
 }
 
 func TestParsingOfURLsWithoutScheme(t *testing.T) {
-	c := config{
-		numConns: defaultNumberOfConns,
-		numReqs:  nil,
-		duration: nil,
-		url:      "localhost:8080",
-		headers:  new(headersList),
-		timeout:  defaultTimeout,
-		method:   "GET",
-		body:     "",
+	c := Config{
+		NumConns: defaultNumberOfConns,
+		NumReqs:  nil,
+		Duration: nil,
+		Url:      "localhost:8080",
+		Headers:  new(HeadersList),
+		Timeout:  defaultTimeout,
+		Method:   "GET",
+		Body:     "",
 	}
 	if err := c.checkArgs(); err != nil {
 		t.Error(err)
 		return
 	}
 	exp := "http://localhost:8080"
-	if act := c.url; act != exp {
+	if act := c.Url; act != exp {
 		t.Error(exp, act)
 	}
 }

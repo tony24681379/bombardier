@@ -11,7 +11,7 @@ import (
 )
 
 type argsParser interface {
-	Parse([]string) (config, error)
+	Parse([]string) (Config, error)
 }
 
 type kingpinParser struct {
@@ -21,7 +21,7 @@ type kingpinParser struct {
 
 	numReqs      *nullableUint64
 	duration     *nullableDuration
-	headers      *headersList
+	headers      *HeadersList
 	numConns     uint64
 	timeout      time.Duration
 	latencies    bool
@@ -45,7 +45,7 @@ func newKingpinParser() argsParser {
 	kparser := &kingpinParser{
 		numReqs:      new(nullableUint64),
 		duration:     new(nullableDuration),
-		headers:      new(headersList),
+		headers:      new(HeadersList),
 		numConns:     defaultNumberOfConns,
 		timeout:      defaultTimeout,
 		latencies:    false,
@@ -178,7 +178,7 @@ func newKingpinParser() argsParser {
 	return argsParser(kparser)
 }
 
-func (k *kingpinParser) Parse(args []string) (config, error) {
+func (k *kingpinParser) Parse(args []string) (Config, error) {
 	k.app.Name = args[0]
 	_, err := k.app.Parse(args[1:])
 	if err != nil {
@@ -194,33 +194,33 @@ func (k *kingpinParser) Parse(args []string) (config, error) {
 	if k.noPrint {
 		pi, pp, pr = false, false, false
 	}
-	format := formatFromString(k.formatSpec)
+	format := FormatFromString(k.formatSpec)
 	if format == nil {
 		return emptyConf, fmt.Errorf(
 			"unknown format or invalid format spec %q", k.formatSpec,
 		)
 	}
-	return config{
-		numConns:       k.numConns,
-		numReqs:        k.numReqs.val,
-		duration:       k.duration.val,
-		url:            k.url,
-		headers:        k.headers,
-		timeout:        k.timeout,
-		method:         k.method,
-		body:           k.body,
-		bodyFilePath:   k.bodyFilePath,
-		stream:         k.stream,
-		keyPath:        k.keyPath,
-		certPath:       k.certPath,
-		printLatencies: k.latencies,
-		insecure:       k.insecure,
-		rate:           k.rate.val,
-		clientType:     k.clientType,
-		printIntro:     pi,
-		printProgress:  pp,
+	return Config{
+		NumConns:       k.numConns,
+		NumReqs:        k.numReqs.val,
+		Duration:       k.duration.val,
+		Url:            k.url,
+		Headers:        k.headers,
+		Timeout:        k.timeout,
+		Method:         k.method,
+		Body:           k.body,
+		BodyFilePath:   k.bodyFilePath,
+		Stream:         k.stream,
+		KeyPath:        k.keyPath,
+		CertPath:       k.certPath,
+		PrintLatencies: k.latencies,
+		Insecure:       k.insecure,
+		Rate:           k.rate.val,
+		ClientType:     k.clientType,
+		PrintIntro:     pi,
+		PrintProgress:  pp,
 		PrintResult:    pr,
-		format:         format,
+		Format:         format,
 	}, nil
 }
 

@@ -19,7 +19,7 @@ func (kf knownFormat) template() []byte {
 type filePath string
 type userDefinedTemplate filePath
 
-func formatFromString(formatSpec string) format {
+func FormatFromString(formatSpec string) format {
 	const prefix = "path:"
 	if strings.HasPrefix(formatSpec, prefix) {
 		return userDefinedTemplate(formatSpec[len(prefix):])

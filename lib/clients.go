@@ -27,7 +27,7 @@ type clientOpts struct {
 	timeout   time.Duration
 	tlsConfig *tls.Config
 
-	headers     *headersList
+	headers     *HeadersList
 	url, method string
 
 	body    *string
@@ -194,7 +194,7 @@ func (c *httpClient) do() (
 	return
 }
 
-func headersToFastHTTPHeaders(h *headersList) *fasthttp.RequestHeader {
+func headersToFastHTTPHeaders(h *HeadersList) *fasthttp.RequestHeader {
 	if len(*h) == 0 {
 		return nil
 	}
@@ -205,7 +205,7 @@ func headersToFastHTTPHeaders(h *headersList) *fasthttp.RequestHeader {
 	return res
 }
 
-func headersToHTTPHeaders(h *headersList) http.Header {
+func headersToHTTPHeaders(h *HeadersList) http.Header {
 	if len(*h) == 0 {
 		return http.Header{}
 	}

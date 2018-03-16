@@ -35,17 +35,17 @@ func testBombardierShouldFireSpecifiedNumberOfRequests(
 	)
 	defer s.Close()
 	numReqs := uint64(100)
-	noHeaders := new(headersList)
-	b, e := NewBombardier(config{
-		numConns:   defaultNumberOfConns,
-		numReqs:    &numReqs,
-		url:        s.URL,
-		headers:    noHeaders,
-		timeout:    defaultTimeout,
-		method:     "GET",
-		body:       "",
-		clientType: clientType,
-		format:     knownFormat("plain-text"),
+	noHeaders := new(HeadersList)
+	b, e := NewBombardier(Config{
+		NumConns:   defaultNumberOfConns,
+		NumReqs:    &numReqs,
+		Url:        s.URL,
+		Headers:    noHeaders,
+		Timeout:    defaultTimeout,
+		Method:     "GET",
+		Body:       "",
+		ClientType: clientType,
+		Format:     knownFormat("plain-text"),
 	})
 	if e != nil {
 		t.Error(e)
@@ -69,18 +69,18 @@ func testBombardierShouldFinish(clientType clientTyp, t *testing.T) {
 		}),
 	)
 	defer s.Close()
-	noHeaders := new(headersList)
+	noHeaders := new(HeadersList)
 	desiredTestDuration := 1 * time.Second
-	b, e := NewBombardier(config{
-		numConns:   defaultNumberOfConns,
-		duration:   &desiredTestDuration,
-		url:        s.URL,
-		headers:    noHeaders,
-		timeout:    defaultTimeout,
-		method:     "GET",
-		body:       "",
-		clientType: clientType,
-		format:     knownFormat("plain-text"),
+	b, e := NewBombardier(Config{
+		NumConns:   defaultNumberOfConns,
+		Duration:   &desiredTestDuration,
+		Url:        s.URL,
+		Headers:    noHeaders,
+		Timeout:    defaultTimeout,
+		Method:     "GET",
+		Body:       "",
+		ClientType: clientType,
+		Format:     knownFormat("plain-text"),
 	})
 	if e != nil {
 		t.Error(e)
@@ -107,7 +107,7 @@ func TestBombardierShouldSendHeaders(t *testing.T) {
 }
 
 func testBombardierShouldSendHeaders(clientType clientTyp, t *testing.T) {
-	requestHeaders := headersList([]header{
+	requestHeaders := HeadersList([]header{
 		{"Header1", "Value1"},
 		{"Header-Two", "value-two"},
 	})
@@ -134,16 +134,16 @@ func testBombardierShouldSendHeaders(clientType clientTyp, t *testing.T) {
 	)
 	defer s.Close()
 	numReqs := uint64(1)
-	b, e := NewBombardier(config{
-		numConns:   defaultNumberOfConns,
-		numReqs:    &numReqs,
-		url:        s.URL,
-		headers:    &requestHeaders,
-		timeout:    defaultTimeout,
-		method:     "GET",
-		body:       "",
-		clientType: clientType,
-		format:     knownFormat("plain-text"),
+	b, e := NewBombardier(Config{
+		NumConns:   defaultNumberOfConns,
+		NumReqs:    &numReqs,
+		Url:        s.URL,
+		Headers:    &requestHeaders,
+		Timeout:    defaultTimeout,
+		Method:     "GET",
+		Body:       "",
+		ClientType: clientType,
+		Format:     knownFormat("plain-text"),
 	})
 	if e != nil {
 		t.Error(e)
@@ -180,16 +180,16 @@ func testBombardierHTTPCodeRecording(clientType clientTyp, t *testing.T) {
 	defer s.Close()
 	eachCodeCount := uint64(10)
 	numReqs := uint64(len(cs)) * eachCodeCount
-	b, e := NewBombardier(config{
-		numConns:   defaultNumberOfConns,
-		numReqs:    &numReqs,
-		url:        s.URL,
-		headers:    new(headersList),
-		timeout:    defaultTimeout,
-		method:     "GET",
-		body:       "",
-		clientType: clientType,
-		format:     knownFormat("plain-text"),
+	b, e := NewBombardier(Config{
+		NumConns:   defaultNumberOfConns,
+		NumReqs:    &numReqs,
+		Url:        s.URL,
+		Headers:    new(HeadersList),
+		Timeout:    defaultTimeout,
+		Method:     "GET",
+		Body:       "",
+		ClientType: clientType,
+		Format:     knownFormat("plain-text"),
 	})
 	if e != nil {
 		t.Error(e)
@@ -229,17 +229,17 @@ func testBombardierTimeoutRecoding(clientType clientTyp, t *testing.T) {
 	)
 	defer s.Close()
 	numReqs := uint64(10)
-	b, e := NewBombardier(config{
-		numConns:   defaultNumberOfConns,
-		numReqs:    &numReqs,
-		duration:   nil,
-		url:        s.URL,
-		headers:    new(headersList),
-		timeout:    shortTimeout,
-		method:     "GET",
-		body:       "",
-		clientType: clientType,
-		format:     knownFormat("plain-text"),
+	b, e := NewBombardier(Config{
+		NumConns:   defaultNumberOfConns,
+		NumReqs:    &numReqs,
+		Duration:   nil,
+		Url:        s.URL,
+		Headers:    new(HeadersList),
+		Timeout:    shortTimeout,
+		Method:     "GET",
+		Body:       "",
+		ClientType: clientType,
+		Format:     knownFormat("plain-text"),
 	})
 	if e != nil {
 		t.Error(e)
@@ -268,16 +268,16 @@ func testBombardierThroughputRecording(clientType clientTyp, t *testing.T) {
 	)
 	defer s.Close()
 	numReqs := uint64(10)
-	b, e := NewBombardier(config{
-		numConns:   defaultNumberOfConns,
-		numReqs:    &numReqs,
-		url:        s.URL,
-		headers:    new(headersList),
-		timeout:    defaultTimeout,
-		method:     "GET",
-		body:       "",
-		clientType: clientType,
-		format:     knownFormat("plain-text"),
+	b, e := NewBombardier(Config{
+		NumConns:   defaultNumberOfConns,
+		NumReqs:    &numReqs,
+		Url:        s.URL,
+		Headers:    new(HeadersList),
+		Timeout:    defaultTimeout,
+		Method:     "GET",
+		Body:       "",
+		ClientType: clientType,
+		Format:     knownFormat("plain-text"),
 	})
 	if e != nil {
 		t.Error(e)
@@ -302,19 +302,19 @@ func TestBombardierStatsPrinting(t *testing.T) {
 	)
 	defer s.Close()
 	numReqs := uint64(10)
-	b, e := NewBombardier(config{
-		numConns:       defaultNumberOfConns,
-		numReqs:        &numReqs,
-		url:            s.URL,
-		headers:        new(headersList),
-		timeout:        defaultTimeout,
-		method:         "GET",
-		body:           "",
-		printLatencies: true,
-		printIntro:     true,
-		printProgress:  true,
+	b, e := NewBombardier(Config{
+		NumConns:       defaultNumberOfConns,
+		NumReqs:        &numReqs,
+		Url:            s.URL,
+		Headers:        new(HeadersList),
+		Timeout:        defaultTimeout,
+		Method:         "GET",
+		Body:           "",
+		PrintLatencies: true,
+		PrintIntro:     true,
+		PrintProgress:  true,
 		PrintResult:    true,
-		format:         knownFormat("plain-text"),
+		Format:         knownFormat("plain-text"),
 	})
 	if e != nil {
 		t.Error(e)
@@ -337,18 +337,18 @@ func TestBombardierStatsPrinting(t *testing.T) {
 
 func TestBombardierErrorIfFailToReadClientCert(t *testing.T) {
 	numReqs := uint64(10)
-	_, e := NewBombardier(config{
-		numConns:       defaultNumberOfConns,
-		numReqs:        &numReqs,
-		url:            "http://localhost",
-		headers:        new(headersList),
-		timeout:        defaultTimeout,
-		method:         "GET",
-		body:           "",
-		printLatencies: true,
-		certPath:       "certPath",
-		keyPath:        "keyPath",
-		format:         knownFormat("plain-text"),
+	_, e := NewBombardier(Config{
+		NumConns:       defaultNumberOfConns,
+		NumReqs:        &numReqs,
+		Url:            "http://localhost",
+		Headers:        new(HeadersList),
+		Timeout:        defaultTimeout,
+		Method:         "GET",
+		Body:           "",
+		PrintLatencies: true,
+		CertPath:       "certPath",
+		KeyPath:        "keyPath",
+		Format:         knownFormat("plain-text"),
 	})
 	if e == nil {
 		t.Fail()
@@ -407,20 +407,20 @@ func testBombardierClientCerts(clientType clientTyp, t *testing.T) {
 	}()
 
 	numReqs := uint64(1)
-	b, e := NewBombardier(config{
-		numConns:       defaultNumberOfConns,
-		numReqs:        &numReqs,
-		url:            "https://localhost:8080/",
-		headers:        new(headersList),
-		timeout:        defaultTimeout,
-		method:         "GET",
-		body:           "",
-		printLatencies: true,
-		certPath:       "testclient.cert",
-		keyPath:        "testclient.key",
-		insecure:       true,
-		clientType:     clientType,
-		format:         knownFormat("plain-text"),
+	b, e := NewBombardier(Config{
+		NumConns:       defaultNumberOfConns,
+		NumReqs:        &numReqs,
+		Url:            "https://localhost:8080/",
+		Headers:        new(HeadersList),
+		Timeout:        defaultTimeout,
+		Method:         "GET",
+		Body:           "",
+		PrintLatencies: true,
+		CertPath:       "testclient.cert",
+		KeyPath:        "testclient.key",
+		Insecure:       true,
+		ClientType:     clientType,
+		Format:         knownFormat("plain-text"),
 	})
 	if e != nil {
 		t.Error(e)
@@ -460,17 +460,17 @@ func testBombardierRateLimiting(clientType clientTyp, t *testing.T) {
 	defer s.Close()
 	rate := uint64(5000)
 	testDuration := 1 * time.Second
-	b, e := NewBombardier(config{
-		numConns:   defaultNumberOfConns,
-		duration:   &testDuration,
-		url:        s.URL,
-		headers:    new(headersList),
-		timeout:    defaultTimeout,
-		method:     "GET",
-		body:       "",
-		rate:       &rate,
-		clientType: clientType,
-		format:     knownFormat("plain-text"),
+	b, e := NewBombardier(Config{
+		NumConns:   defaultNumberOfConns,
+		Duration:   &testDuration,
+		Url:        s.URL,
+		Headers:    new(HeadersList),
+		Timeout:    defaultTimeout,
+		Method:     "GET",
+		Body:       "",
+		Rate:       &rate,
+		ClientType: clientType,
+		Format:     knownFormat("plain-text"),
 	})
 	if e != nil {
 		t.Error(e)
@@ -518,16 +518,16 @@ func testBombardierSendsBody(clientType clientTyp, t *testing.T) {
 	)
 	defer s.Close()
 	one := uint64(1)
-	b, e := NewBombardier(config{
-		numConns:   defaultNumberOfConns,
-		numReqs:    &one,
-		url:        s.URL,
-		headers:    new(headersList),
-		timeout:    defaultTimeout,
-		method:     "POST",
-		body:       requestBody,
-		clientType: clientType,
-		format:     knownFormat("plain-text"),
+	b, e := NewBombardier(Config{
+		NumConns:   defaultNumberOfConns,
+		NumReqs:    &one,
+		Url:        s.URL,
+		Headers:    new(HeadersList),
+		Timeout:    defaultTimeout,
+		Method:     "POST",
+		Body:       requestBody,
+		ClientType: clientType,
+		Format:     knownFormat("plain-text"),
 	})
 	if e != nil {
 		t.Error(e)
@@ -567,16 +567,16 @@ func testBombardierSendsBodyFromFile(clientType clientTyp, t *testing.T) {
 	)
 	defer s.Close()
 	one := uint64(1)
-	b, e := NewBombardier(config{
-		numConns:     defaultNumberOfConns,
-		numReqs:      &one,
-		url:          s.URL,
-		headers:      new(headersList),
-		timeout:      defaultTimeout,
-		method:       "POST",
-		bodyFilePath: bodyPath,
-		clientType:   clientType,
-		format:       knownFormat("plain-text"),
+	b, e := NewBombardier(Config{
+		NumConns:     defaultNumberOfConns,
+		NumReqs:      &one,
+		Url:          s.URL,
+		Headers:      new(HeadersList),
+		Timeout:      defaultTimeout,
+		Method:       "POST",
+		BodyFilePath: bodyPath,
+		ClientType:   clientType,
+		Format:       knownFormat("plain-text"),
 	})
 	if e != nil {
 		t.Error(e)
@@ -588,14 +588,14 @@ func testBombardierSendsBodyFromFile(clientType clientTyp, t *testing.T) {
 
 func TestBombardierFileDoesntExist(t *testing.T) {
 	bodyPath := "/does/not/exist.forreal"
-	_, e := NewBombardier(config{
-		numConns:     defaultNumberOfConns,
-		url:          "http://example.com",
-		headers:      new(headersList),
-		timeout:      defaultTimeout,
-		method:       "POST",
-		bodyFilePath: bodyPath,
-		format:       knownFormat("plain-text"),
+	_, e := NewBombardier(Config{
+		NumConns:     defaultNumberOfConns,
+		Url:          "http://example.com",
+		Headers:      new(HeadersList),
+		Timeout:      defaultTimeout,
+		Method:       "POST",
+		BodyFilePath: bodyPath,
+		Format:       knownFormat("plain-text"),
 	})
 	_, ok := e.(*os.PathError)
 	if !ok {
@@ -631,17 +631,17 @@ func testBombardierStreamsBody(clientType clientTyp, t *testing.T) {
 	)
 	defer s.Close()
 	one := uint64(1)
-	b, e := NewBombardier(config{
-		numConns:   defaultNumberOfConns,
-		numReqs:    &one,
-		url:        s.URL,
-		headers:    new(headersList),
-		timeout:    defaultTimeout,
-		method:     "POST",
-		body:       requestBody,
-		stream:     true,
-		clientType: clientType,
-		format:     knownFormat("plain-text"),
+	b, e := NewBombardier(Config{
+		NumConns:   defaultNumberOfConns,
+		NumReqs:    &one,
+		Url:        s.URL,
+		Headers:    new(HeadersList),
+		Timeout:    defaultTimeout,
+		Method:     "POST",
+		Body:       requestBody,
+		Stream:     true,
+		ClientType: clientType,
+		Format:     knownFormat("plain-text"),
 	})
 	if e != nil {
 		t.Error(e)
@@ -684,17 +684,17 @@ func testBombardierStreamsBodyFromFile(clientType clientTyp, t *testing.T) {
 	)
 	defer s.Close()
 	one := uint64(1)
-	b, e := NewBombardier(config{
-		numConns:     defaultNumberOfConns,
-		numReqs:      &one,
-		url:          s.URL,
-		headers:      new(headersList),
-		timeout:      defaultTimeout,
-		method:       "POST",
-		bodyFilePath: bodyPath,
-		stream:       true,
-		clientType:   clientType,
-		format:       knownFormat("plain-text"),
+	b, e := NewBombardier(Config{
+		NumConns:     defaultNumberOfConns,
+		NumReqs:      &one,
+		Url:          s.URL,
+		Headers:      new(HeadersList),
+		Timeout:      defaultTimeout,
+		Method:       "POST",
+		BodyFilePath: bodyPath,
+		Stream:       true,
+		ClientType:   clientType,
+		Format:       knownFormat("plain-text"),
 	})
 	if e != nil {
 		t.Error(e)

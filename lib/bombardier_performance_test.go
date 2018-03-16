@@ -20,38 +20,38 @@ var (
 
 func BenchmarkBombardierSingleReqPerf(b *testing.B) {
 	addr := "localhost:" + *serverPort
-	benchmarkFireRequest(config{
-		numConns:       defaultNumberOfConns,
-		numReqs:        nil,
-		duration:       &longDuration,
-		url:            "http://" + addr,
-		headers:        new(headersList),
-		timeout:        defaultTimeout,
-		method:         "GET",
-		body:           "",
-		printLatencies: false,
-		clientType:     clientTypeFromString(*clientType),
+	benchmarkFireRequest(Config{
+		NumConns:       defaultNumberOfConns,
+		NumReqs:        nil,
+		Duration:       &longDuration,
+		Url:            "http://" + addr,
+		Headers:        new(HeadersList),
+		Timeout:        defaultTimeout,
+		Method:         "GET",
+		Body:           "",
+		PrintLatencies: false,
+		ClientType:     clientTypeFromString(*clientType),
 	}, b)
 }
 
 func BenchmarkBombardierRateLimitPerf(b *testing.B) {
 	addr := "localhost:" + *serverPort
-	benchmarkFireRequest(config{
-		numConns:       defaultNumberOfConns,
-		numReqs:        nil,
-		duration:       &longDuration,
-		url:            "http://" + addr,
-		headers:        new(headersList),
-		timeout:        defaultTimeout,
-		method:         "GET",
-		body:           "",
-		printLatencies: false,
-		rate:           &highRate,
-		clientType:     clientTypeFromString(*clientType),
+	benchmarkFireRequest(Config{
+		NumConns:       defaultNumberOfConns,
+		NumReqs:        nil,
+		Duration:       &longDuration,
+		Url:            "http://" + addr,
+		Headers:        new(HeadersList),
+		Timeout:        defaultTimeout,
+		Method:         "GET",
+		Body:           "",
+		PrintLatencies: false,
+		Rate:           &highRate,
+		ClientType:     clientTypeFromString(*clientType),
 	}, b)
 }
 
-func benchmarkFireRequest(c config, bm *testing.B) {
+func benchmarkFireRequest(c Config, bm *testing.B) {
 	b, e := NewBombardier(c)
 	if e != nil {
 		bm.Error(e)

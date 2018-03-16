@@ -18,7 +18,7 @@ const (
 var (
 	version = "unspecified"
 
-	emptyConf = config{}
+	emptyConf = Config{}
 	Parser    = newKingpinParser()
 
 	defaultTestDuration  = 10 * time.Second

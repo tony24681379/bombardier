@@ -6,7 +6,7 @@ import (
 
 func TestHeadersToStringConversion(t *testing.T) {
 	expectations := []struct {
-		in  headersList
+		in  HeadersList
 		out string
 	}{
 		{
@@ -30,14 +30,14 @@ func TestHeadersToStringConversion(t *testing.T) {
 }
 
 func TestShouldErrorOnInvalidFormat(t *testing.T) {
-	h := new(headersList)
+	h := new(HeadersList)
 	if err := h.Set("Yaba daba do"); err == nil {
 		t.Error("Should fail on strings without colon")
 	}
 }
 
 func TestShouldProperlyAddValidHeaders(t *testing.T) {
-	h := new(headersList)
+	h := new(HeadersList)
 	for _, hs := range []string{"Key1: Value1", "Key2: Value2"} {
 		if err := h.Set(hs); err != nil {
 			t.Error(err)
@@ -52,7 +52,7 @@ func TestShouldProperlyAddValidHeaders(t *testing.T) {
 }
 
 func TestShouldTrimHeaderValues(t *testing.T) {
-	h := new(headersList)
+	h := new(HeadersList)
 	if err := h.Set("Key:   Value   "); err != nil {
 		t.Error(err)
 	}
